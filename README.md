@@ -1,4 +1,4 @@
 # ml-demo
-this is my first. git repository
+This Is My first Git Repository
 <br>
 author -puru yadav
