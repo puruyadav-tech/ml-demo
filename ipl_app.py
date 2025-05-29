@@ -1,20 +1,18 @@
-
+# STEP 1: Install dependencies
 !pip install streamlit pyngrok --quiet
 
-
+# STEP 2: Upload model file
 from google.colab import files
 uploaded = files.upload()
 
+# STEP 3: Write app to a file
 %%writefile app.py
 import streamlit as st
 import pickle
 import pandas as pd
-from PIL import Image
-import os
 
-
+# Load model
 pipe = pickle.load(open('mdl.pkl', 'rb'))
-
 
 teams = [
     'Sunrisers Hyderabad', 'Mumbai Indians', 'Royal Challengers Bangalore',
@@ -31,7 +29,6 @@ cities = [
     'Sharjah', 'Mohali', 'Bengaluru'
 ]
 
-# Logo links (optional: download and save to files if needed)
 logo_urls = {
     "Chennai Super Kings": "https://upload.wikimedia.org/wikipedia/en/2/2d/Chennai_Super_Kings_Logo.png",
     "Delhi Capitals": "https://upload.wikimedia.org/wikipedia/en/d/dc/Delhi_Capitals.svg",
@@ -43,7 +40,6 @@ logo_urls = {
     "Sunrisers Hyderabad": "https://upload.wikimedia.org/wikipedia/en/8/81/Sunrisers_Hyderabad_Logo.svg"
 }
 
-# UI
 st.title('🏏 IPL Win Predictor')
 
 col1, col2 = st.columns(2)
@@ -52,7 +48,6 @@ with col1:
 with col2:
     bowling_team = st.selectbox('Select Bowling Team', sorted(teams))
 
-# Show logos
 if batting_team in logo_urls:
     st.image(logo_urls[batting_team], width=100, caption="Batting Team")
 if bowling_team in logo_urls:
@@ -98,14 +93,19 @@ if st.button('Predict Probability'):
 
     except Exception as e:
         st.error(f"⚠️ Error: {e}")
-        !streamlit run app.py &>/content/log.txt &
 
-        from pyngrok import ngrok
+# END OF app.py
+# Add ngrok auth token correctly using subprocess
+import subprocess
+subprocess.run(["ngrok", "config", "add-authtoken", "2xb56k3LFdhdxtOxW77Wmp87www_26MBiUj3nbvXsQT7bZP1Q"])
 
+# Start Streamlit app
+!streamlit run app.py &>/content/log.txt &
 
-!ngrok config add-authtoken 2xb56k3LFdhdxtOxW77Wmp87www_26MBiUj3nbvXsQT7bZP1Q
-
-
-public_url = ngrok.connect(8501)
+# Expose port 8501 with ngrok
+from pyngrok import ngrok
+public_url = ngrok.connect(port=8501)
 print(f"🌐 Your app is live at: {public_url}")
+
+
 
