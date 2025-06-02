@@ -1,12 +1,3 @@
-# STEP 1: Install dependencies
-!pip install streamlit pyngrok --quiet
-
-# STEP 2: Upload model file
-from google.colab import files
-uploaded = files.upload()
-
-# STEP 3: Write app to a file
-%%writefile app.py
 import streamlit as st
 import pickle
 import pandas as pd
@@ -93,19 +84,3 @@ if st.button('Predict Probability'):
 
     except Exception as e:
         st.error(f"⚠️ Error: {e}")
-
-# END OF app.py
-# Add ngrok auth token correctly using subprocess
-import subprocess
-subprocess.run(["ngrok", "config", "add-authtoken", "2xb56k3LFdhdxtOxW77Wmp87www_26MBiUj3nbvXsQT7bZP1Q"])
-
-# Start Streamlit app
-!streamlit run app.py &>/content/log.txt &
-
-# Expose port 8501 with ngrok
-from pyngrok import ngrok
-public_url = ngrok.connect(port=8501)
-print(f"🌐 Your app is live at: {public_url}")
-
-
-
